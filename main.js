@@ -3,6 +3,56 @@ const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
+document.addEventListener('DOMContentLoaded', () => {
+const likerr = document.querySelectorAll('.like-glyph')
+likerr.forEach(like => like.addEventListener('click', likeClick))
+
+console.log(likerr)
+})
+
+const likeClick = (e) => {
+ const like = e.target
+ console.log(like)
+ const likeIdNum = document.getElementById('201811189')
+ let likingIt;
+ if(like.className === 'like-glyph') {
+  likingIt = 'true'
+ }
+ else if(like.className === 'activated-heart') {
+  likingIt = 'false'
+}
+mimicServerCall(url=`http://mimicServer.example.com/${likeIdNum}`, {
+method: 'PATCH',
+headers:{
+ 'Content-Type':'application/json'
+},
+body: JSON.stringify({
+  like: likingIt
+})
+})
+.then(result => {
+  if(result && likingIt === 'true') {
+    like.innerText = FULL_HEART
+    like.setAttribute('class', 'activated-heart')
+  }else if(result && likingIt === 'false'){
+    like.innerText = EMPTY_HEART
+    like.setAttribute('class', 'like-glyph')
+  }
+})
+.catch(error => {
+  modal.innerText = error
+  modal.setAttribute('class', '')
+  setTimeout('modal.setAttribute("class", "hidden")',3000)
+})
+
+}
+
+
+
+
+
+
+
 
 
 
