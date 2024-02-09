@@ -4,54 +4,44 @@ const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
 document.addEventListener('DOMContentLoaded', () => {
-const likerr = document.querySelectorAll('.like-glyph')
-likerr.forEach(like => like.addEventListener('click', likeClick))
-
-console.log(likerr)
+  thelike = document.querySelectorAll('.like-glyph')
+  thelike.forEach(likes => likes.addEventListener('click', likeBtn))
 })
 
-const likeClick = (e) => {
- const like = e.target
- console.log(like)
- const likeIdNum = document.getElementById('201811189')
- let likingIt;
- if(like.className === 'like-glyph') {
-  likingIt = 'true'
- }
- else if(like.className === 'activated-heart') {
-  likingIt = 'false'
-}
-mimicServerCall(url=`http://mimicServer.example.com/${likeIdNum}`, {
-method: 'PATCH',
-headers:{
- 'Content-Type':'application/json'
-},
-body: JSON.stringify({
-  like: likingIt
-})
-})
-.then(result => {
-  if(result && likingIt === 'true') {
-    like.innerText = FULL_HEART
-    like.setAttribute('class', 'activated-heart')
-  }else if(result && likingIt === 'false'){
-    like.innerText = EMPTY_HEART
-    like.setAttribute('class', 'like-glyph')
+const likeBtn = (e) => {
+  like = e.target
+  likeID = e.target.parentNode.parentNode.parentNode.parentNode.id
+  let likeState
+  if(like.className === 'like-glyph'){
+    likeState = 'noLike'
+  }else if(like.className === 'activated-heart'){
+    likeState = 'liked'
   }
-})
+  mimicServerCall(url=`http://mimicServer.example.com/${likeID}`,{
+    method: 'PATCH',
+    headers: {
+      'Content-Type':'application/json'
+    },
+    body: JSON.stringify({
+      like: likeState
+    })
+  })
+  .then(res => {
+    if(res && likeState === 'noLike') {
+      like.setAttribute('class', 'activated-heart')
+      like.innerText = FULL_HEART
+    }else if(res && likeState === 'liked') {
+      like.setAttribute('class', 'like-glyph')
+      like.innerText = EMPTY_HEART
+    }
+  })
 .catch(error => {
   modal.innerText = error
-  modal.setAttribute('class', '')
-  setTimeout('modal.setAttribute("class", "hidden")',3000)
+    modal.setAttribute('class', '')
+   setTimeout('modal.setAttribute("class", "hidden")'),3000
 })
 
 }
-
-
-
-
-
-
 
 
 
